@@ -83,17 +83,23 @@ Crime_df$COUNTY <- revalue(Crime_df$COUNTY,c("CORK CITY" = "CORK","CORK NORTH" =
 library(reshape2)
 Crime_df <- melt(Crime_df, id = c("COUNTY"))
 Crime_df[order(Crime_df$COUNTY),]
+class(Crime_df)
 
+colnames(Crime_df)[2] <- "Year"
+colnames(Crime_df)[3] <- "Crime_Counts"
 
+Crime_df$Year <- revalue(Crime_df$Year,c("CR_2006" = "2006","CR_2011" = "2011","CR_2016" = "2016")) 
+
+head(Crime_df)
 
 library(sqldf)
-aggr_county_df <- sqldf('SELECT COUNTY, SUM(CR_2006) AS Count_2006, SUM(CR_2011) AS Count_2011, SUM(CR_2016) AS Count_2016
-      FROM Crime_df GROUP BY COUNTY')
-aggr_county_df
+Final_Crime_df <- sqldf('SELECT COUNTY, Year, SUM(Crime_Counts) AS Crime_Counts 
+                        FROM Crime_df GROUP BY COUNTY, Year')
+Final_Crime_df
 
+y<-strsplit(as.character( Final_Crime_df[,1])  , "/", fixed=TRUE)
+check = data.frame(COUNTY= unlist(y), Year= rep(Final_Crime_df[,2], sapply(y, length)),Crime_Counts= rep(Final_Crime_df[,3], sapply(y, length)))
+check
 
-county_field <- as.character(Crime_df$COUNTY)
-Crime_df$COUNTY <- county_field
-str(Crime_df)
-Crime_df
-
+Final_Crime_df <- check
+Final_Crime_df
