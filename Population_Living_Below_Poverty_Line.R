@@ -7,7 +7,7 @@ head(Poverty_df)
 #Checking the type of the data
 class(Poverty_df)
 
-#struture of the dataframe
+#struture of the dataframe bhbhjhj nkjh mnkjk mnjhj 
 str(Poverty_df)
 
 names(Poverty_df)
